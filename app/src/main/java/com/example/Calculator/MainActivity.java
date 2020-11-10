@@ -2,6 +2,7 @@ package com.example.Calculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     Stack mStack2 = new Stack();
     Queue mQueue = new Queue();//表达式队列
     ElemType mElemType = new ElemType();//按键输入的表达式
-
+    final double MIN = 1e-320;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                         String sum = sumLast.data;
                         double x = sumLast.toDouble();
                         int y = (int)x;
-                        if (Math.abs(y-x)<1e-8){
+                        if (Math.abs(y-x)<MIN){
                             sum = String.valueOf(y);
                         }
                         Log.d("str",str+"--------------");
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                         String sum = sumMid.data;
                         double x = sumMid.toDouble();
                         int y = (int)x;
-                        if (Math.abs(y-x)<1e-8){
+                        if (Math.abs(y-x)<MIN){
                             sum = String.valueOf(y);
                         }
                         tv1.setText(sum);
@@ -119,6 +120,11 @@ public class MainActivity extends AppCompatActivity {
         tv2 = findViewById(R.id.tv2);
         tv3 = findViewById(R.id.tv3);
         tv4 = findViewById(R.id.tv4);
+
+        SharedPreferences pref = getSharedPreferences("data",MODE_PRIVATE);
+        tv1.setText(pref.getString("tv_1",""));
+        tv2.setText(pref.getString("tv_2",""));
+        tv3.setText(pref.getString("tv_3",""));
     }
 
     //初始化栈,使栈底为"#"
@@ -469,7 +475,7 @@ public class MainActivity extends AppCompatActivity {
 
                         double x1 =elemType2.toDouble();
                         double y1 =elemType1.toDouble();
-                        if(Math.abs(y1-0)<1e-8){
+                        if(Math.abs(y1-0)<MIN){
                             throw  new Exception();
                         }
                         sum = x1/y1;
@@ -572,7 +578,7 @@ public class MainActivity extends AppCompatActivity {
                         elem2 = stack1.Pop();
                         double d1 = elem1.toDouble();
                         double d2 = elem2.toDouble();
-                        if (Math.abs(d1-0)<=1e-8){
+                        if (Math.abs(d1-0)<=MIN){
                             throw new Exception();
                         }
                         sum = d2/d1;
@@ -608,5 +614,18 @@ public class MainActivity extends AppCompatActivity {
         stack1.showElem();
         Log.d("sumMid",sumMid.data);
         return sumMid;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        String tv_1 = tv1.getText().toString().trim();
+        String tv_2 = tv2.getText().toString().trim();
+        String tv_3 = tv3.getText().toString().trim();
+        SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+        editor.putString("tv_1",tv_1);
+        editor.putString("tv_2",tv_2);
+        editor.putString("tv_3",tv_3);
+        editor.apply();
     }
 }
