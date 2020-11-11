@@ -1,7 +1,11 @@
 package com.example.Calculator;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     String string2 = s;
                     ElemType sumLast ;//后缀的计算结果
                     ElemType sumMid ;//中缀的计算结果
+
                     // 中缀转后缀
                     String str = transfrom(string1);
                     tv2.setText(str);
